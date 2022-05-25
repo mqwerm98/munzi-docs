@@ -47,11 +47,9 @@ public class DocumentUtil<ENUM_DOCS> {
     }
 
     // mvc result 데이터 파싱
-    public ENUM_DOCS toEnumDocs(MvcResult result) throws IOException {
+    public ENUM_DOCS toEnumDocs(MvcResult result, TypeReference<ENUM_DOCS> responseType) throws IOException {
         return objectMapper.readValue(
-                result.getResponse().getContentAsByteArray(),
-                new TypeReference<ENUM_DOCS>() {
-                }
+                result.getResponse().getContentAsByteArray(), responseType
         );
     }
 
