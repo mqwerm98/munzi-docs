@@ -1,6 +1,10 @@
 package com.munzi.munzidocs.component;
 
-public interface EnumType {
+/**
+ * Docs로 사용할 Enum의 Base
+ *
+ */
+public interface IDocsEnumBase {
 
     String getValue();
     String getDescription();
