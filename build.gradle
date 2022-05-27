@@ -53,6 +53,8 @@ dependencies {
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     implementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    implementation group: 'com.google.guava', name: 'guava', version: 'r05'
+
 
     annotationProcessor 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
