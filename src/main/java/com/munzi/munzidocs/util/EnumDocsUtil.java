@@ -90,18 +90,22 @@ public class EnumDocsUtil {
     /**
      * enum명을 받아 enumDocsAdocPath에 adoc을 자동으로 생성해 준다.
      *
-     * @param enumDocsAdocPath enum adoc을 생성할 경로
-     * @param enumDocsNames enum명들
+     * @param enumDocsAdocPath           enum adoc을 생성할 경로
+     * @param testControllerName         toDocs를 실행 할 TestController명 (camel case로 기입)
+     * @param createEnumDocsFunctionName toDocs를 실행 할 TestController의 function 명 (camel case로 기입)
+     * @param enumDocsNames              enum명들
      * @throws Exception 파일 생성 에러
      */
-    public void createEnumDocAdoc(String enumDocsAdocPath, Set<String> enumDocsNames) throws Exception {
+    public void createEnumDocsAdoc(String enumDocsAdocPath, String testControllerName, String createEnumDocsFunctionName, Set<String> enumDocsNames) throws Exception {
         for (String name : enumDocsNames) {
             String hyphenName = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_HYPHEN, name);
+            String hyphenTestControllerName = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_HYPHEN, testControllerName);
+            String hyphenCreateEnumDocsFunctionName = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_HYPHEN, createEnumDocsFunctionName);
 
             String txt = ":doctype: book\n" +
                     ":icons: font\n\n" +
                     "[[" + hyphenName + "]]\n" +
-                    "include::{snippets}/document-controller-test/enums/custom-response-fields-" + name + ".adoc[]";
+                    "include::{snippets}/" + hyphenTestControllerName + "/" + hyphenCreateEnumDocsFunctionName + "/custom-response-fields-" + name + ".adoc[]";
             String fileName = enumDocsAdocPath + (enumDocsAdocPath.endsWith("/") ? "" : "/") + hyphenName + ".adoc";
 
             // 파일 객체 생성
