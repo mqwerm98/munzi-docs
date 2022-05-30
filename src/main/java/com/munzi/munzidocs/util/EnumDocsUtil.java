@@ -18,7 +18,7 @@ import static org.springframework.restdocs.snippet.Attributes.attributes;
 import static org.springframework.restdocs.snippet.Attributes.key;
 
 /**
- * EnumDocs로 변환하는데 사용하는 Util 모음
+ * EnumDocs로 변환하는데 사용하는 Utility 모음
  */
 public class EnumDocsUtil {
 
@@ -28,8 +28,7 @@ public class EnumDocsUtil {
      * @param packageName enum들이 있는 package명
      * @return map형태로 변환된 enum
      */
-    public Map<String, Map<String, String>> toEnumDocs(String packageName) {
-        EnumDocsUtil enumDocsUtil = new EnumDocsUtil();
+    public static Map<String, Map<String, String>> toEnumDocs(String packageName) {
         Map<String, Map<String, String>> enumDocs = new HashMap<>();
 
         Set<Class> classes = getClasses(packageName);
@@ -40,7 +39,7 @@ public class EnumDocsUtil {
             String lowerName = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, name);
 
             IDocsEnumBase[] enumConstants = (IDocsEnumBase[]) c.getEnumConstants();
-            enumDocs.put(lowerName, enumDocsUtil.toMap(enumConstants));
+            enumDocs.put(lowerName, EnumDocsUtil.toMap(enumConstants));
         }
 
         return enumDocs;
@@ -52,7 +51,7 @@ public class EnumDocsUtil {
      * @param enumDocs 문서화 할 enumDocs
      * @return snippet들로 변환한 enumDocs
      */
-    public Snippet[] toDocs(Map<String, Map<String, String>> enumDocs) {
+    public static Snippet[] toDocs(Map<String, Map<String, String>> enumDocs) {
         Set<String> keys = enumDocs.keySet();
         Snippet[] ss = new Snippet[keys.size()];
 
@@ -72,7 +71,7 @@ public class EnumDocsUtil {
      * @param docsEnumBases map으로 변환 할 DocsEnum 배열
      * @return map으로 변환한 docsEnumBases
      */
-    public Map<String, String> toMap(IDocsEnumBase[] docsEnumBases) {
+    public static Map<String, String> toMap(IDocsEnumBase[] docsEnumBases) {
         Map<String, String> map = Arrays.stream(docsEnumBases)
                 .collect(Collectors.toMap(IDocsEnumBase::getValue, IDocsEnumBase::getDescription));
 
@@ -96,7 +95,7 @@ public class EnumDocsUtil {
      * @param enumDocsNames              enum명들
      * @throws Exception 파일 생성 에러
      */
-    public void createEnumDocsAdoc(String enumDocsAdocPath, String testControllerName, String createEnumDocsFunctionName, Set<String> enumDocsNames) throws Exception {
+    public static void createEnumDocsAdoc(String enumDocsAdocPath, String testControllerName, String createEnumDocsFunctionName, Set<String> enumDocsNames) throws Exception {
         for (String name : enumDocsNames) {
             String hyphenName = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_HYPHEN, name);
             String hyphenTestControllerName = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_HYPHEN, testControllerName);
@@ -129,7 +128,7 @@ public class EnumDocsUtil {
      * @param docInfoFilePath docinfo.html 파일을 생성할 경로
      * @throws Exception 파일 생성 오류
      */
-    public void createDocInfoFile(String docInfoFilePath) throws Exception {
+    public static void createDocInfoFile(String docInfoFilePath) throws Exception {
         String script = "<script>\n" +
                 "    function ready(callbackFunc) {\n" +
                 "        if (document.readyState !== 'loading') {\n" +
@@ -182,7 +181,7 @@ public class EnumDocsUtil {
      * @param packageName 조회할 package 명(경로)
      * @return packageName 하위의 모든 class들
      */
-    private Set<Class> getClasses(String packageName) {
+    private static Set<Class> getClasses(String packageName) {
         Set<Class> classes = new HashSet<Class>();
         String packageNameSlash = "./" + packageName.replace(".", "/");
         java.net.URL directoryURL = Thread.currentThread().getContextClassLoader().getResource(packageNameSlash);
@@ -200,11 +199,12 @@ public class EnumDocsUtil {
         File directory = new File(directoryString);
         if (directory.exists()) {
             String[] files = directory.list();
+            assert files != null;
             for (String fileName : files) {
                 if (fileName.endsWith(".class")) {
                     fileName = fileName.substring(0, fileName.length() - 6);  // remove .class
                     try {
-                        Class c = Class.forName(packageName + "." + fileName);
+                        Class<?> c = Class.forName(packageName + "." + fileName);
                         if (!Modifier.isAbstract(c.getModifiers())) // add a class which is not abstract
                             classes.add(c);
                     } catch (ClassNotFoundException e) {
@@ -229,7 +229,7 @@ public class EnumDocsUtil {
      * @param enumMap 해당 enum의 map화된 값
      * @return custom된 Snippet
      */
-    private CustomFieldsSnippet customResponseFields(String subName, String title, Map<String, String> enumMap) {
+    private static CustomFieldsSnippet customResponseFields(String subName, String title, Map<String, String> enumMap) {
         FieldDescriptor[] fieldDescriptors = enumMap.entrySet().stream()
                 .map(x -> fieldWithPath(x.getKey()).description(x.getValue()))
                 .toArray(FieldDescriptor[]::new);
